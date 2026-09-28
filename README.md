@@ -13,23 +13,37 @@ Este repositório contém o código-fonte do sistema web desenvolvido como Açã
 O objetivo do software é automatizar o fracionamento das horas de plantões de sobreaviso, substituindo a transcrição manual de planilhas por um motor lógico de cálculo. A solução resolve o gargalo operacional de apuração de horas noturnas, domingos e feriados, mitigando falhas humanas na folha de pagamento.
 
 ## Funcionalidades Implementadas
-* **Cadastro de Colaboradores:** Módulo para registro local dos servidores (Nome e Matrícula) aptos à escala de sobreaviso.
-* **Processamento de Frequência (Parser):** Ferramenta que recebe o texto bruto dos relatórios de ponto e extrai os horários de entrada e saída automaticamente.
-* **Cálculo Automático de Rubricas:** Motor matemático que aplica as regras estatutárias (CLT/EBSERH) para dividir a jornada nas colunas financeiras pertinentes (Rubricas 81, 878, 361, 363 e Fator de Sobreaviso 300).
-* **Calendário Parametrizável:** Sistema integrado que reconhece feriados móveis (Páscoa/Carnaval) e permite o cadastro de feriados locais para incidência automática de horas a 100%.
-* **Exportação e Backup:** Geração de relatórios de conferência (A4 Paisagem) com a mesclagem dos arquivos PDF das frequências digitalizadas.
+* **Cadastro de Colaboradores:** Módulo conectado ao banco de dados para registro dos servidores (Nome e Matrícula) aptos à escala de sobreaviso.
+* **Processamento de Frequência (Parser):** Ferramenta que recebe o texto bruto dos relatórios de ponto e extrai os horários de entrada e saída automaticamente usando Expressões Regulares (Regex).
+* **Cálculo Automático de Rubricas:** Motor matemático escrito em TypeScript que aplica as regras estatutárias (CLT/EBSERH) para dividir a jornada nas colunas financeiras pertinentes.
+* **Calendário Parametrizável (Supabase):** Sistema integrado que consome feriados diretamente de uma API do Supabase para incidência automática de horas a 100%.
+* **Exportação e Backup Local:** Geração de relatórios CSV com apenas um clique para backup seguro local na máquina do analista.
 
 ## Tecnologias Utilizadas
-A aplicação foi construída visando a máxima compatibilidade com os computadores do ambiente hospitalar, rodando integralmente no lado do cliente (*Client-Side*):
+A aplicação evoluiu de um monolito HTML para uma arquitetura moderna baseada no padrão MVC (Model-View-Controller) rodando no Client-Side e Server-Side:
 
-* **HTML5 e CSS3:** Estruturação semântica e estilização de interface.
-* **JavaScript (Vanilla):** Responsável por toda a lógica de manipulação do DOM, cálculos matemáticos, expressões regulares (*Regex*) para o *parser* e controle de estados.
-* **LocalStorage:** Utilizado para a persistência local dos dados (cadastros e feriados), dispensando a instalação de bancos de dados em nuvem.
-* **PDF.js:** Biblioteca externa utilizada para renderizar e anexar as folhas de frequência digitalizadas nos relatórios finais.
+* **Next.js e React:** Escolhidos para estruturar componentes reutilizáveis e agilizar a criação de telas ricas (A View do MVC).
+* **Tailwind CSS:** Framework de estilização responsiva para garantir aderência visual aos monitores do hospital.
+* **TypeScript:** Adiciona tipagem forte ao JavaScript, garantindo a ausência de quebras no motor matemático do Controller.
+* **Supabase:** Utilizado como *Backend as a Service* (O Model do MVC) para gerenciar o banco de dados PostgreSQL sem a necessidade de hospedar servidores complexos.
 
 ## Como Executar o Projeto
-O sistema não exige a instalação de dependências ou servidores locais (*Node.js*, *Apache*, etc.). 
+O sistema requer que o Node.js esteja instalado na máquina.
 
 1. Faça o clone deste repositório para o seu computador:
    ```bash
-   git clone [https://github.com/SEU-USUARIO/sistema-sobreaviso.git](https://github.com/SEU-USUARIO/sistema-sobreaviso.git)
+   git clone https://github.com/SEU-USUARIO/sistema-sobreaviso.git
+   ```
+2. Acesse a pasta do projeto:
+   ```bash
+   cd sistema-sobreaviso
+   ```
+3. Instale as dependências do projeto (isso criará a pasta node_modules localmente):
+   ```bash
+   npm install
+   ```
+4. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+5. Abra o navegador e acesse: [http://localhost:3000](http://localhost:3000)
