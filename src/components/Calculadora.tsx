@@ -1,4 +1,16 @@
+"use client";
+import { useState } from "react";
+import { parseFrequenciaTexto, calcularDiferencaHoras, RegistroHoras } from "@/utils/parser";
+
 export default function Calculadora() {
+  const [texto, setTexto] = useState("");
+  const [resultados, setResultados] = useState<RegistroHoras[]>([]);
+
+  const handleProcessar = () => {
+    const processado = parseFrequenciaTexto(texto);
+    setResultados(processado);
+  };
+
   return (
     <div className="bg-white p-5 rounded-lg shadow-sm">
       <h2 className="text-xl font-bold mb-4 text-slate-700">Calculadora de Sobreaviso</h2>
@@ -8,8 +20,13 @@ export default function Calculadora() {
         <textarea 
           className="w-full h-32 p-3 border border-slate-300 rounded focus:outline-none focus:border-blue-500 font-mono text-sm"
           placeholder="Exemplo:\n01/05/2026  07:30 19:15\n02/05/2026  19:00 07:00"
+          value={texto}
+          onChange={(e) => setTexto(e.target.value)}
         ></textarea>
-        <button className="mt-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">
+        <button 
+          onClick={handleProcessar}
+          className="mt-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
+        >
           Processar Horas
         </button>
       </div>
@@ -20,19 +37,39 @@ export default function Calculadora() {
             <tr>
               <th className="px-4 py-3 border-b">Data</th>
               <th className="px-4 py-3 border-b border-l">Horários Originais</th>
-              <th className="px-4 py-3 border-b border-l bg-green-50">Rubrica 300 (Sobreaviso)</th>
-              <th className="px-4 py-3 border-b border-l bg-orange-50">Rubrica 81 (Extra 50%)</th>
-              <th className="px-4 py-3 border-b border-l bg-orange-50">Rubrica 878 (Noturno 50%)</th>
-              <th className="px-4 py-3 border-b border-l bg-blue-50">Rubrica 361 (Extra 100%)</th>
-              <th className="px-4 py-3 border-b border-l bg-blue-50">Rubrica 363 (Noturno 100%)</th>
+              <th className="px-4 py-3 border-b border-l bg-green-50">Total Bruto (h)</th>
+              <th className="px-4 py-3 border-b border-l bg-orange-50">Rubrica 300 (1/3)</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td colSpan={7} className="px-4 py-8 text-center text-slate-500 italic">
-                Nenhum dado processado ainda. Cole as horas acima e clique em "Processar Horas".
-              </td>
-            </tr>
+            {resultados.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="px-4 py-8 text-center text-slate-500 italic">
+                  Nenhum dado processado ainda. Cole as horas acima e clique em "Processar Horas".
+                </td>
+              </tr>
+            ) : (
+              resultados.map((reg, i) => {
+                let totalBruto = 0;
+                if (!reg.erro && reg.horarios.length >= 2) {
+                  for (let j = 0; j < reg.horarios.length; j += 2) {
+                    if (reg.horarios[j+1]) {
+                      totalBruto += calcularDiferencaHoras(reg.horarios[j], reg.horarios[j+1]);
+                    }
+                  }
+                }
+                const rubrica300 = (totalBruto / 3).toFixed(2);
+
+                return (
+                  <tr key={i} className="border-b">
+                    <td className="px-4 py-3 font-bold">{reg.data}</td>
+                    <td className="px-4 py-3 border-l text-blue-600">{reg.horarios.join(' ')}</td>
+                    <td className="px-4 py-3 border-l bg-green-50">{reg.erro ? 'ERRO' : totalBruto.toFixed(2)}</td>
+                    <td className="px-4 py-3 border-l bg-orange-50 font-bold">{reg.erro ? '-' : rubrica300}</td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
