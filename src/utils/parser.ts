@@ -10,13 +10,13 @@ export interface RegistroHoras {
  * Exemplo de entrada: "01/05/2026 07:30 19:15"
  */
 export function parseFrequenciaTexto(texto: string): RegistroHoras[] {
-  const linhas = texto.split('\\n').map(l => l.trim()).filter(l => l.length > 0);
+  const linhas = texto.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   const resultados: RegistroHoras[] = [];
 
   // Regex para identificar uma data no formato DD/MM ou DD/MM/YYYY
-  const regexData = /(\\d{2}\\/\\d{2}(?:\\/\\d{2,4})?)/;
+  const regexData = /(\d{2}\/\d{2}(?:\/\d{2,4})?)/;
   // Regex para identificar horários no formato HH:MM
-  const regexHora = /(\\d{2}:\\d{2})/g;
+  const regexHora = /(\d{2}:\d{2})/g;
 
   for (const linha of linhas) {
     const matchData = linha.match(regexData);
