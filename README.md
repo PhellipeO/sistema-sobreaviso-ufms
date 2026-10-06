@@ -1,5 +1,5 @@
 # sistema-sobreaviso-ufms
-Projeto Integrador II - Sistema Web de Gestão de Sobreaviso para o HU Brasil
+Projeto Integrador II - Sistema Web de Gestão de Sobreaviso para a HU Brasil
 
 # Projeto Integrador: Sistema Web para Gestão de Sobreaviso
 
@@ -8,7 +8,7 @@ Projeto Integrador II - Sistema Web de Gestão de Sobreaviso para o HU Brasil
 **Desenvolvedores:** Phellipe Oliveira de Almeida e Nyágara Veras de Freitas  
 
 ## Sobre o Projeto
-Este repositório contém o código-fonte do sistema web desenvolvido como Ação de Extensão para o Setor de Pagamento (UAP/DivGP) do Hospital Universitário de Brasília (HU Brasil / Rede EBSERH). 
+Este repositório contém o código-fonte do sistema web desenvolvido como Ação de Extensão para o Setor de Pagamento (UAP/DivGP) do Hospital Universitário de Brasília (HUB-UnB / Rede HU Brasil). 
 
 O objetivo do software é automatizar o fracionamento das horas de plantões de sobreaviso, substituindo a transcrição manual de planilhas por um motor lógico de cálculo. A solução resolve o gargalo operacional de apuração de horas noturnas, domingos e feriados, mitigando falhas humanas na folha de pagamento.
 
