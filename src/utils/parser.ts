@@ -9,14 +9,12 @@ export interface RegistroHoras {
  * colado do sistema de ponto.
  */
 export function parseFrequenciaTexto(texto: string): RegistroHoras[] {
-  // Limpeza de sujeira: remove letras soltas (ex: 19:15r) que o relógio exporta errado
-  const textoLimpo = texto.replace(/[a-zA-Z]/g, '');
-  
-  const linhas = textoLimpo.split('\\n').map(l => l.trim()).filter(l => l.length > 0);
+  const linhas = texto.split('\n').map(l => l.trim()).filter(l => l.length > 0);
   const resultados: RegistroHoras[] = [];
 
-  const regexData = /(\\d{2}\\/\\d{2}(?:\\/\\d{2,4})?)/;
-  const regexHora = /(\\d{2}:\\d{2})/g;
+  const regexData = /(\d{2}\/\d{2}(?:\/\d{2,4})?)/;
+  // Captura o horário HH:MM e qualquer letra indicadora que venha logo após (ex: r, m, c)
+  const regexHora = /(\d{2}:\d{2})([a-zA-Z]?)/g;
 
   for (const linha of linhas) {
     const matchData = linha.match(regexData);
@@ -24,16 +22,25 @@ export function parseFrequenciaTexto(texto: string): RegistroHoras[] {
 
     const data = matchData[1];
     
-    const horarios = [];
+    const horarios: string[] = [];
     let matchHora;
     while ((matchHora = regexHora.exec(linha)) !== null) {
-      horarios.push(matchHora[1]);
+      const hora = matchHora[1];
+      const tipo = (matchHora[2] || '').toLowerCase();
+
+      // 'r' = registro em relógio de ponto (válido)
+      // 'm' = registro manual (válido)
+      // ''  = horário sem sufixo (válido para compatibilidade)
+      // 'c' ou qualquer outra letra = cancelado / desconsiderado (ignorado)
+      if (tipo === 'r' || tipo === 'm' || tipo === '') {
+        horarios.push(hora);
+      }
     }
 
     resultados.push({
       data,
       horarios,
-      erro: horarios.length > 0 && horarios.length % 2 !== 0 
+      erro: horarios.length === 0 || horarios.length % 2 !== 0 
     });
   }
 
@@ -47,7 +54,7 @@ export function calcularDiferencaHoras(entrada: string, saida: string): number {
   const [h1, m1] = entrada.split(':').map(Number);
   const [h2, m2] = saida.split(':').map(Number);
 
-  let minutosEntrada = h1 * 60 + m1;
+  const minutosEntrada = h1 * 60 + m1;
   let minutosSaida = h2 * 60 + m2;
 
   if (minutosSaida <= minutosEntrada) {
@@ -65,7 +72,7 @@ export function calcularAdicionalNoturno(entrada: string, saida: string): number
   const [h1, m1] = entrada.split(':').map(Number);
   const [h2, m2] = saida.split(':').map(Number);
 
-  let mIn = h1 * 60 + m1;
+  const mIn = h1 * 60 + m1;
   let mOut = h2 * 60 + m2;
 
   if (mOut <= mIn) mOut += 24 * 60;

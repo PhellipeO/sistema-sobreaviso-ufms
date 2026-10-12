@@ -2,8 +2,14 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/utils/supabaseClient";
 
+interface Feriado {
+  id?: string | number;
+  data: string;
+  nome: string;
+}
+
 export default function Feriados() {
-  const [feriados, setFeriados] = useState<any[]>([]);
+  const [feriados, setFeriados] = useState<Feriado[]>([]);
 
   useEffect(() => {
     fetchFeriados();
