@@ -74,7 +74,33 @@ export default function Calculadora() {
           </div>
         )}
 
-        <div className="mt-3 flex gap-3">
+        {/* Adicionado na Fase 14: Restrição de Upload OWASP */}
+        <div className="mt-4 p-4 border border-dashed border-slate-400 bg-white rounded">
+          <label className="block text-sm font-bold text-slate-700 mb-1">
+            Anexar Comprovante PDF da Frequência (Restrito a 5MB - Diretriz OWASP)
+          </label>
+          <p className="text-xs text-slate-500 mb-2">
+            Permitido estritamente arquivos com extensão .pdf com tamanho máximo de 5 Megabytes.
+          </p>
+          <input 
+            type="file" 
+            accept=".pdf"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                if (file.size > 5 * 1024 * 1024) {
+                  alert("ERRO DE SEGURANÇA: O arquivo excede o limite estrito de 5MB permitido.");
+                  e.target.value = '';
+                } else {
+                  alert("Comprovante anexado e validado com sucesso!");
+                }
+              }
+            }}
+            className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          />
+        </div>
+
+        <div className="mt-4 flex gap-3">
           <button 
             onClick={handleProcessar}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
