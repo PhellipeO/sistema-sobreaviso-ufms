@@ -10,8 +10,13 @@ export default function Feriados() {
   }, []);
 
   const fetchFeriados = async () => {
-    const { data } = await supabase.from('feriados').select('*');
-    if (data) setFeriados(data);
+    try {
+      const { data, error } = await supabase.from('feriados').select('*');
+      if (error) throw new Error("Database error");
+      if (data) setFeriados(data);
+    } catch {
+      // Oculta detalhes do erro do console
+    }
   };
 
   return (
